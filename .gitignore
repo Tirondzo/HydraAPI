@@ -50,3 +50,7 @@ main/x64/
 PostProcessDLL/x64/
 PostProcessDLLExample/x64/
 mikktspace/x64/
+
+# Debug
+*.pdb
+*.ilk

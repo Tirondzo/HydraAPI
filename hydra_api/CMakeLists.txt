@@ -65,7 +65,7 @@ set(SOURCE_FILES
 
 if (WIN32)
     set(SOURCE_FILES ${SOURCE_FILES} SystemWin.cpp HR_AccumImageWin.cpp)
-    set(SOURCE_FILES ${SOURCE_FILES} HydraLaunchProcessWin32.cpp)
+    set(SOURCE_FILES ${SOURCE_FILES} OpenGLContextWin.cpp HydraLaunchProcessWin32.cpp)
 else()
 	set(SOURCE_FILES ${SOURCE_FILES} SystemUnix.cpp
                                      HR_AccumImageLinux.cpp
@@ -119,7 +119,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DIN_DEBUG")
 
 if(WIN32)
   add_definitions(-DUNICODE -D_UNICODE)
-  target_link_libraries(hydra_api LINK_PUBLIC ${LIBS} ${OPENGL_glu_LIBRARY} ${OPENGL_gl_LIBRARY} ies_parser mikttspace)
+  target_link_libraries(hydra_api LINK_PUBLIC ${LIBS} ${OPENGL_glu_LIBRARY} ${OPENGL_gl_LIBRARY} clew ies_parser mikktspace)
 else()
   set_property(TARGET hydra_api PROPERTY POSITION_INDEPENDENT_CODE ON)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.1 -fopenmp")
