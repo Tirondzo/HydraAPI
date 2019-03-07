@@ -91,6 +91,8 @@ set(POST_PROC
         NonLocalMeans.cpp
         )
 
+set(HYDRA_GRID
+        grid/HRG_Client.cpp grid/HRG_Client.h grid/HRG_Server.cpp grid/HRG_Server.h grid/HRG_ServerConfig.cpp grid/HRG_ServerConfig.h grid/HRG_ClientConfig.cpp grid/HRG_ClientConfig.h)
 
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
@@ -111,7 +113,7 @@ endif()
 
 
 #build hydra API static library
-add_library(hydra_api STATIC ${SOURCE_FILES} ${POST_PROC} ${MODERN_GL_RENDER_DRIVER} ${HR_EXTENSIONS})
+add_library(hydra_api STATIC ${SOURCE_FILES} ${POST_PROC} ${MODERN_GL_RENDER_DRIVER} ${HR_EXTENSIONS} ${HYDRA_GRID})
 target_include_directories (hydra_api PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
 
 
