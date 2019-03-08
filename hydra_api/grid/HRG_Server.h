@@ -6,6 +6,7 @@
 #define HYDRAAPI_EX_HRG_SERVER_H
 
 #include "HRG_ServerConfig.h";
+#include "asio.hpp"
 
 class HRG_Server {
     HRG_ServerConfig config;

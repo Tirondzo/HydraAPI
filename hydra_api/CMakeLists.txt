@@ -100,6 +100,22 @@ find_package(FreeImage REQUIRED)
 include_directories(${FREEIMAGE_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${FREEIMAGE_LIBRARIES})
 
+find_package(Asio REQUIRED)
+include_directories(${ASIO_INCLUDE_DIRS})
+add_definitions(-DASIO_STANDALONE)
+
+if(WIN32)
+    add_definitions(-D__USE_W32_SOCKETS)
+    #Set current WINVER
+    if (CMAKE_SYSTEM_VERSION)
+        set(ver ${CMAKE_SYSTEM_VERSION})
+        string(REPLACE "." "" ver ${ver})
+        string(REGEX REPLACE "([0-9])" "0\\1" ver ${ver})
+
+        add_definitions(-D_WIN32_WINNT=0x${ver})
+    endif()
+endif()
+
 find_package(OpenGL REQUIRED)
 find_package (Threads REQUIRED)
 
