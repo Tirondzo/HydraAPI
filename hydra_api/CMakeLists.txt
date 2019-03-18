@@ -92,7 +92,15 @@ set(POST_PROC
         )
 
 set(HYDRA_GRID
-        grid/HRG_Client.cpp grid/HRG_Client.h grid/HRG_Server.cpp grid/HRG_Server.h grid/HRG_ServerConfig.cpp grid/HRG_ServerConfig.h grid/HRG_ClientConfig.cpp grid/HRG_ClientConfig.h)
+        grid/HRG_Client.cpp
+        grid/HRG_Client.h
+        grid/HRG_Server.cpp
+        grid/HRG_Server.h
+        grid/HRG_ServerConfig.cpp
+        grid/HRG_ServerConfig.h
+        grid/HRG_ClientConfig.cpp
+        grid/HRG_ClientConfig.h
+        )
 
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
@@ -103,6 +111,7 @@ set(LIBS ${LIBS} ${FREEIMAGE_LIBRARIES})
 find_package(Asio REQUIRED)
 include_directories(${ASIO_INCLUDE_DIRS})
 add_definitions(-DASIO_STANDALONE)
+add_definitions(-DASIO_SEPARATE_COMPILATION)
 
 if(WIN32)
     add_definitions(-D__USE_W32_SOCKETS)
