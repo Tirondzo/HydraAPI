@@ -100,7 +100,8 @@ set(HYDRA_GRID
         grid/HRG_ServerConfig.h
         grid/HRG_ClientConfig.cpp
         grid/HRG_ClientConfig.h
-        )
+        grid/HRG_Impl.cpp
+        grid/HRG_Impl.h)
 
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")

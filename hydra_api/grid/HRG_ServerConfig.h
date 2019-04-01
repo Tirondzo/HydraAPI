@@ -5,9 +5,13 @@
 #ifndef HYDRAAPI_EX_HRG_SERVERCONFIG_H
 #define HYDRAAPI_EX_HRG_SERVERCONFIG_H
 
+#include "asio.hpp"
+
 typedef unsigned short ushort;
 
+using asio::ip::tcp;
 class HRG_ServerConfig {
+public:
     ushort port;
 };
 
