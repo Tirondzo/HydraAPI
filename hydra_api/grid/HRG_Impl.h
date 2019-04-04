@@ -5,11 +5,16 @@
 #ifndef HYDRAAPI_EX_HRG_IMPL_H
 #define HYDRAAPI_EX_HRG_IMPL_H
 
+#include "pugixml.hpp"
+
 #include "asio.hpp"
 #include <vector>
 #include <list>
 #include <functional>
+#include <regex>
+#include <algorithm>
 
+#include <fstream>
 #include <iostream>
 
 class HRG_Server;
@@ -87,12 +92,12 @@ namespace HRG_Impl {
         std::string job_id;
         std::string exe_id;
 
-        //TODO: Samples details (...)
+        //TODO: Samples details (samples, ...)
     };
 
     class HRG_Protocol{
     public:
-        typedef std::function<void(const ResponseResult&, const std::string)> GetClientHandler;
+        typedef std::function<bool(const ResponseResult&, const std::string)> GetClientHandler;
         typedef std::function<void(const ResponseResult&)> GetServerHandler;
         typedef std::function<void(const ResponseResult&)> GetConfigHandler;
         typedef std::function<void(const ResponseResult&)> GetExecutorsHandler;
@@ -150,6 +155,8 @@ namespace HRG_Impl {
 
         tcp::socket &socket;
         std::shared_ptr<std::ostream> log;
+
+        typedef std::function<void(HRG_Impl::ResponseResult)> downloadedHandler;
     private:
         std::string ip_str() const {
             return socket.remote_endpoint().address().to_string() + ':'
@@ -158,24 +165,82 @@ namespace HRG_Impl {
 
         void line_handler(const asio::error_code& e, std::size_t size){
             if(!e){
+                *log << "Buffer old:" << data.size() << std::endl << std::flush;
                 std::istream is(&data);
                 std::string line;
                 std::getline(is, line);
-                if(!line.empty() && *line.rbegin() == '\r') {
-                    line.erase(line.length() - 1, 1);
-                }
+                *log << "Buffer new:" << data.size() << std::endl << std::flush;
 
+                //TODO: Normal logging
                 *log << "[" << ip_str() << "] " << "line: " << line << std::endl << std::flush;
 
-                //parse string
-                if(line == "REGISTRATION"){
+
+                const std::regex got_client("^I'M CLIENT: (\\w{16})$");
+                const std::regex got_server("^I'M SERVER$");
+                const std::regex got_config("^CONFIG.XML: ([0-9]+)$");
+                const std::regex got_executors("^EXECUTORS.XML: ([0-9]+)$");
+                const std::regex get_executors("^GET EXECUTORS$");
+                const std::regex got_job("^JOB.XML: ([0-9]+)$");
+                const std::regex stop_job("^STOP JOB: ([0-9]+)$");
+                const std::regex status_job("^STATUS JOB: ([0-9]+)$");
+                const std::regex got_status_job("^STATUSJOB.XML: ([0-9]+)$");
+
+                std::smatch pieces_match;
+
+                if(std::regex_match(line, pieces_match, got_client)){
+                    //Got client stage
                     //TODO: Some auth check
                     //There is easy to add some additional check
                     //Password, rsa key, etc...
-                    if(getClientHandler){ getClientHandler(ResponseResult{RESPONSE::OK, e, ""}, ""); }
-                    asyncOk();
-                }else if(line == "OK"){
+                    if(getClientHandler && getClientHandler(ResponseResult{RESPONSE::OK, e, ""}, pieces_match[1].str())){
+                        asyncOk();
+                    }else{
+                        asyncNotOk();
+                    }
+                }else if(std::regex_match(line, pieces_match, got_server)){
+                    //Got server
+                    if(getServerHandler){
+                        getServerHandler(ResponseResult{RESPONSE::OK, e, ""});
+                    }else{
+                        asyncNotOk();
+                    }
+                }else if(std::regex_match(line, pieces_match, got_config)){
+                    //Got config
 
+                    //TODO: parse config xml
+                    size_t length = std::stoul(pieces_match[1].str());
+                    auto self(shared_from_this());
+                    *log << "Config reading with size " << length << std::endl << std::flush;
+
+                    //std::fstream test("why.txt"); test<<"Because"; test.close();
+                    std::shared_ptr<std::fstream> file = std::make_shared<std::fstream>("hello.txt", std::fstream::out);
+                    (*file) << "Hi" << std::endl << std::flush;
+                    std::shared_ptr<std::iostream> fstream = std::static_pointer_cast<std::iostream>(file);
+                    async_download_file(length, fstream, [self, fstream](ResponseResult res){*(self->log)<<"Downloaded"<<std::endl<<std::flush;});
+                }else if(std::regex_match(line, pieces_match, get_executors)){
+                    //Get executors
+
+                    if(getExecutorsHandler){
+                        getExecutorsHandler(ResponseResult{RESPONSE::OK, e, ""});
+                    }else{
+                        asyncNotOk();
+                    }
+                }else if(std::regex_match(line, pieces_match, got_executors)){
+                    //Got executors
+
+                    //TODO: parse executors xml
+                }else if(std::regex_match(line, pieces_match, got_job)){
+                    //Got job
+
+                    //TODO: parse job xml
+                }else if(std::regex_match(line, pieces_match, stop_job)){
+
+                }else if(std::regex_match(line, pieces_match, status_job)){
+
+                }else if(std::regex_match(line, pieces_match, got_status_job)){
+                    //Got status
+
+                    //TODO: parse status job
                 }
             }
         }
@@ -183,7 +248,44 @@ namespace HRG_Impl {
             auto self(shared_from_this());
             using namespace std::placeholders;
             *log << "[" << ip_str() << "]" << " Reading line" << std::endl << std::flush;
-            asio::async_read_until(socket, data, "\n\n", std::bind(&HRG_Impl::HRG_ProtoV1::line_handler, self, _1, _2));
+            asio::async_read_until(socket, data, "\n", std::bind(&HRG_Impl::HRG_ProtoV1::line_handler, self, _1, _2));
+        }
+
+
+        void async_read_xml(unsigned int bytes){
+
+        }
+
+        void async_download_file(size_t bytes, std::shared_ptr<std::iostream> stream, const downloadedHandler &handler=[](){}){
+            async_download_block(bytes, stream, handler);
+        }
+
+        void async_download_block(size_t bytes, std::shared_ptr<std::iostream> stream,
+                const downloadedHandler &handler=[](){}){
+            auto self(shared_from_this());
+            asio::async_read(socket, asio::buffer(&data, std::min<size_t>(512, bytes-std::min(bytes, data.size()))),
+                    [self, bytes, handler, stream](asio::error_code e, std::size_t size){
+               if(!e){
+                   *(self->log) << "Downloaded: " << size << std::endl << std::flush;
+                   *(self->log) << "Buff size: " << self->data.size() << std::endl << std::flush;
+                   *(self->log) << "Bytes: " << bytes << std::endl << std::flush;
+                   std::size_t left = bytes - std::min<size_t>(bytes, self->data.size());
+                   //(*stream)<<(&(self->data));
+
+                   size_t bytes_needed = std::min(bytes, self->data.size());
+                   asio::streambuf::const_buffers_type bufs = self->data.data();
+                   std::copy(asio::buffers_begin(bufs),
+                             asio::buffers_begin(bufs) + bytes_needed, std::ostream_iterator<char>(*stream));
+                   self->data.consume(bytes_needed);
+                   *(self->log) << "Buff size2: " << self->data.size() << std::endl << std::flush;
+
+                   if(left > 0){
+                       self->async_download_block(left, stream, handler);
+                   }else{
+                       handler(ResponseResult{RESPONSE::OK, e, ""});
+                   }
+               }else handler(ResponseResult{RESPONSE::ERR, e, "Error occurred"});
+            });
         }
 
     public:
@@ -202,6 +304,12 @@ namespace HRG_Impl {
                               [this, self](std::error_code ec, std::size_t){});
         }
 
+        void asyncNotOk(){
+            auto self(shared_from_this());
+            asio::async_write(socket, asio::buffer("ERR\n\n"),
+                              [this, self](std::error_code ec, std::size_t){});
+        }
+
         void asyncToServerReg(std::string &clientId) {
             auto self(shared_from_this());
             asio::async_write(socket, asio::buffer("REGISTRATION\n\n"),
@@ -215,6 +323,9 @@ namespace HRG_Impl {
         void asyncGetJobStatus(){}
         void asyncSendJob(){}
         void asyncStopJob(){}
+        void sendConfig(){}
+        void sendExecutors(){}
+        void asyncToClientReg(){};
     };
 
     class HRG_AcceptedClient : public std::enable_shared_from_this<HRG_AcceptedClient> {
@@ -222,7 +333,10 @@ namespace HRG_Impl {
         tcp::socket socket;
         std::shared_ptr<std::ostream> log;
 
-        void regHandler(const HRG_Impl::ResponseResult res, const std::string str);
+
+        bool regHandler(const HRG_Impl::ResponseResult &res, const std::string str){
+            return true;
+        }
 
     public:
         HRG_AcceptedClient(tcp::socket socket, HRG_Server &server) :
