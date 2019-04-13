@@ -3,6 +3,7 @@
 //
 
 #include "HRG_Impl.h"
+const std::string HRG_Impl::HRG_ProtoV1::MSG_DELIM = "\n";
 
 //void HRG_Impl::HRG_AcceptedClient::regHandler(const asio::error_code& e, const RESPONSE r, const std::string str){
 //    if(r == RESPONSE::OK){
