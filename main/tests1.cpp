@@ -1612,13 +1612,13 @@ void run_all_api_tests(const int startTestId)
                        &test35_cornell_with_light,
 											 &test36_update_from_memory,
                        &test37_cornell_with_light_different_image_layers,
-                       &dummy_test,
+                       &test38_save_mesh_and_delayed_load,
                        &test39_mmlt_or_ibpt,
                        &test40_several_changes,
                        &test41_load_library_basic,
                        &dummy_test,
                        &test43_test_direct_light,
-                       &test44_four_lights,
+                       &test44_four_lights_and_compressed_mesh,
                        &test45_mesh_from_vsgf_opengl_bug_teapot,
                        &test46_light_geom_rect,
                        &test47_light_geom_disk,
@@ -2019,6 +2019,9 @@ void run_all_alg_tests(int a_start)
   TestFunc tests[] = { &test_401_ibpt_and_glossy_glass,
                        &test_402_ibpt_and_glossy_double_glass,
                        &test_403_light_inside_double_glass,
+                       &test_404_cornell_glossy,
+                       &test_405_cornell_with_mirror,
+                       &test_406_env_glass_ball_caustic,
   };
   
   std::ofstream fout("z_test_ralgs.txt");

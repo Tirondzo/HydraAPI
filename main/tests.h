@@ -135,15 +135,15 @@ bool test35_cornell_with_light();
 bool test36_update_from_memory();
 bool test37_cornell_with_light_different_image_layers();
 
-bool test38_licence_plate();          // not used, to change, #TODO: get back MLT test here
+bool test38_save_mesh_and_delayed_load();
 bool test39_mmlt_or_ibpt();
 bool test40_several_changes();
 
 bool test41_load_library_basic();
-bool test42_load_library_basic();     // not used (Why ???),  #TODO: get back scene load tests here
+bool test42_load_mesh_compressed();   // not used (Why ???),  #TODO: get back scene load tests here
 
 bool test43_test_direct_light();
-bool test44_four_lights();
+bool test44_four_lights_and_compressed_mesh();
 bool test45_mesh_from_vsgf_opengl_bug_teapot();
 
 bool test46_light_geom_rect();
@@ -198,6 +198,8 @@ bool test90_proc_tex_normalmap();
 bool test91_proc_tex_bump();
 bool test92_proc_tex_bump2();
 
+bool test93_proc_tex_recursive();
+
 bool test93_check_xml_fail_materials();   // not used in automatic mode
 bool test94_check_xml_fail_camera();      // not used in automatic mode
 
@@ -216,6 +218,7 @@ namespace GEO_TESTS
   bool test_003_compute_normals(); // bug - normals computation
   bool test_004_dof();
   bool test_005_instancing();
+  bool test_006_points_on_mesh();
 }
 
 namespace MTL_TESTS
@@ -396,6 +399,9 @@ namespace ALGR_TESTS
   bool test_401_ibpt_and_glossy_glass();
   bool test_402_ibpt_and_glossy_double_glass();
   bool test_403_light_inside_double_glass();
+  bool test_404_cornell_glossy();
+  bool test_405_cornell_with_mirror();
+  bool test_406_env_glass_ball_caustic();
 }
 
 //These tests need some scene library to exist in their respective folders

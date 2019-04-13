@@ -32,6 +32,8 @@ set(SOURCE_FILES
         HydraRenderDriverAPI.h
         HydraVSGFExport.cpp
         HydraVSGFExport.h
+        HydraVSGFCompress.h
+        HydraVSGFCompress.cpp
         HydraXMLHelpers.h
         HydraXMLVerify.cpp
         HydraXMLVerify.h
@@ -89,7 +91,7 @@ set(POST_PROC
         HydraPostProcessSpecial.h
         HydraPostProcessSpecial.cpp
         NonLocalMeans.cpp
-        )
+        HydraVSGFCompress.h HydraVSGFCompress.cpp)
 
 
 
@@ -119,7 +121,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DIN_DEBUG")
 
 if(WIN32)
   add_definitions(-DUNICODE -D_UNICODE)
-  target_link_libraries(hydra_api LINK_PUBLIC ${LIBS} ${OPENGL_glu_LIBRARY} ${OPENGL_gl_LIBRARY} clew ies_parser mikktspace)
+  target_link_libraries(hydra_api LINK_PUBLIC ${LIBS} ${OPENGL_glu_LIBRARY} ${OPENGL_gl_LIBRARY} clew corto ies_parser mikktspace)
 else()
   set_property(TARGET hydra_api PROPERTY POSITION_INDEPENDENT_CODE ON)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.1 -fopenmp")
@@ -135,6 +137,6 @@ else()
 
   MESSAGE( STATUS "CMAKE_CXX_FLAGS(HydraAPI): " ${CMAKE_CXX_FLAGS} )
   target_link_libraries(hydra_api LINK_PUBLIC Threads::Threads ${LIBS} ${OPENGL_glu_LIBRARY} ${OPENGL_gl_LIBRARY}
-          ies_parser mikktspace
-          stdc++fs rt dl OpenCL)
+                        ies_parser mikktspace corto
+                        stdc++fs rt dl OpenCL)
 endif()

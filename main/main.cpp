@@ -19,6 +19,7 @@ IHRRenderDriver* CreateDriverRTE(const wchar_t* a_cfg) { return nullptr; }
 #include <signal.h>
 #endif
 
+
 void ErrorCallBack(const wchar_t* message, const wchar_t* callerPlace)
 {
   std::wcout << callerPlace << L":\t" << message << std::endl;
@@ -82,6 +83,11 @@ void test_gl32_002_init(void);
 void test_gl32_002_draw(void);
 
 void _hrDebugPrintVSGF(const wchar_t* a_fileNameIn, const wchar_t* a_fileNameOut);
+void _hrConvertOldVSGFMesh(const std::wstring& a_path, const std::wstring& a_newPath);
+
+void _hrCompressMesh(const std::wstring& a_inPath, const std::wstring& a_outPath);
+void _hrDecompressMesh(const std::wstring& a_path, const std::wstring& a_newPath);
+
 
 void demo_01_plane_box();
 
@@ -130,7 +136,7 @@ int main(int argc, const char** argv)
   {
     //GEO_TESTS::test_001_mesh_from_memory();
     //demo_01_plane_box();
-    //window_main_free_look(L"/home/frol/PROG/HydraAPI/main/tests/test_31", L"opengl1");
+    //window_main_free_look(L"/home/frol/PROG/HydraAPI/main/tests/test_46", L"opengl1Debug");
     
     //run_all_api_tests();
     //run_all_geo_tests();
@@ -139,11 +145,40 @@ int main(int argc, const char** argv)
 	  //run_all_alg_tests();
 	  //run_all_ipp_tests();
 
-    test40_several_changes();
+    //test40_several_changes();
+    test44_four_lights_and_compressed_mesh();
+    //test42_load_mesh_compressed();
+    //test78_material_remap_list1();
+    
+    
+    //hrSceneLibraryOpen(L"/home/frol/temp", HR_WRITE_DISCARD);
+    //_hrConvertOldVSGFMesh(L"data/meshes/teapot.vsgf", L"data/meshes/teapot2.vsgf");
+    ////_hrDebugPrintVSGF(L"data/meshes/teapot.vsgf",    L"/home/frol/temp/teapot1.txt");
+    ////_hrDebugPrintVSGF(L"data/meshes/teapot2.vsgf",   L"/home/frol/temp/teapot2.txt");
+
+    //std::cout << test38_save_mesh_and_delayed_load() << std::endl;
+    //std::cout << test49_light_geom_disk() << std::endl;
+    
+    //test46_light_geom_rect();
+    //std::cout << test89_proc_texture_dirty() << std::endl;
+    //window_main_free_look(L"/home/frol/PROG/HydraAPI/main/tests/test_49", L"opengl1"); // &test02_draw
+    //window_main_free_look(L"/home/frol/PROG/HydraAPI/main/tests/test_38", L"opengl1Debug"); // &test02_draw
+  
+    //_hrCompressMesh  (L"/home/frol/temp/original.vsgf",    L"/home/frol/temp/compressed.vsgfc");
+    //_hrDecompressMesh(L"/home/frol/temp/compressed.vsgfc", L"/home/frol/temp/decompressed.vsgf");
+    //_hrDebugPrintVSGF(L"/home/frol/temp/original.vsgf",    L"/home/frol/temp/original.txt");
+    //_hrDebugPrintVSGF(L"/home/frol/temp/decompressed.vsgf",L"/home/frol/temp/decompressed.txt");
+
+    //test82_proc_texture();
+    //test93_proc_tex_recursive();
     //test39_mmlt_or_ibpt();
     //test42_load_library_basic();
     //std::cout << test37_cornell_with_light_different_image_layers() << std::endl;
     
+    //std::cout << ALGR_TESTS::test_404_cornell_glossy() << std::endl;
+    //std::cout << ALGR_TESTS::test_405_cornell_with_mirror() << std::endl;
+    //std::cout << ALGR_TESTS::test_406_env_glass_ball_caustic() << std::endl;
+    //std::cout << std::endl << "g_MSEOutput = " << g_MSEOutput << std::endl;
     
     //std::cout << "g_mse = " << g_MSEOutput << std::endl;
     //window_main_free_look(L"tests_f/test_241", L"opengl1Debug");
