@@ -19,6 +19,7 @@
 
 #include <cmath>
 #include <random>
+#include <limits>
 
 using std::isnan;
 using std::isinf;
@@ -1883,7 +1884,9 @@ void HRUtils::getRandomPointsOnMesh(HRMeshRef mesh_ref, float *points, uint32_t 
   std::vector<uint32_t> triangle_indices;
   if(tri_area_weighted)
   {
-    float min_area = std::numeric_limits<float>::max();
+    //use () wrapping to prevent min/max macro expansion
+    //solution from here: https://stackoverflow.com/a/27443191
+    float min_area = (std::numeric_limits<float>::max)();
     std::vector<float> triangle_areas(tri_num, 0.0f);
     for(uint32_t i = 0; i < tri_num; ++i )
     {

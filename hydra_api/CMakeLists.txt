@@ -93,6 +93,8 @@ set(POST_PROC
         NonLocalMeans.cpp
         HydraVSGFCompress.h HydraVSGFCompress.cpp)
 
+set(HYDRA_GRID_SIMPLE
+        grid-simple/RD_HydraGrid.cpp grid-simple/GRID_Joiner.cpp grid-simple/GRID_Joiner.h)
 
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
@@ -113,7 +115,7 @@ endif()
 
 
 #build hydra API static library
-add_library(hydra_api STATIC ${SOURCE_FILES} ${POST_PROC} ${MODERN_GL_RENDER_DRIVER} ${HR_EXTENSIONS})
+add_library(hydra_api STATIC ${SOURCE_FILES} ${POST_PROC} ${MODERN_GL_RENDER_DRIVER} ${HR_EXTENSIONS} ${HYDRA_GRID_SIMPLE})
 target_include_directories (hydra_api PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
 
 

@@ -676,6 +676,7 @@ HAPI void hrLightGroupInstanceExt(HRSceneInstRef a_pScn, HRLightGroupExt lightGr
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 IHRRenderDriver* CreateHydraConnection_RenderDriver();
+IHRRenderDriver* CreateHydraGridConnection_RenderDriver();
 
 IHRRenderDriver* CreateOpenGL1DrawBVH_RenderDriver();   // debug drivers
 IHRRenderDriver* CreateOpenGL1TestSplit_RenderDriver();
@@ -711,6 +712,8 @@ std::unique_ptr<IHRRenderDriver> CreateRenderFromString(const wchar_t *a_classNa
     return std::unique_ptr<IHRRenderDriver>(CreateOpenGL3_Utilty_RenderDriver());
   else if (!wcscmp(a_className, L"HydraModern"))
     return std::unique_ptr<IHRRenderDriver>(CreateHydraConnection_RenderDriver());
+  else if (!wcscmp(a_className, L"HydraGRID"))
+    return std::unique_ptr<IHRRenderDriver>(CreateHydraGridConnection_RenderDriver());
   else
   {
     HrPrint(HR_SEVERITY_ERROR, L"CreateRenderFromString, unknown render driver name ", a_className);

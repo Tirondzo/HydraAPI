@@ -404,6 +404,10 @@ namespace ALGR_TESTS
   bool test_406_env_glass_ball_caustic();
 }
 
+bool test_grid_simple_01();
+bool test_grid_simple_02();
+
+
 //These tests need some scene library to exist in their respective folders
 bool test1000_loadlibrary_and_edit();
 bool test1001_loadlibrary_and_add_textures();
