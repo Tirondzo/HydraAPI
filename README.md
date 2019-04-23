@@ -23,8 +23,8 @@ Linux:
 2. sudo apt-get install libfreeimage-dev
 3. sudo apt-get install mesa-common-dev libglu1-mesa-dev libglfw3-dev libglfw3
 4. sudo apt install ocl-icd-opencl-dev
-5. Copy bin_ubuntu/hydra forder to your home folder to form '/home/hydra' or build and install HydraCore from sources; 
-6. use Cmake;
+5. use Cmake;
+6. build and install HydraCore using Cmake and approptiate instruction
 
 Optionally, to build and use python bindings library (tested only under Linux):
 1. Get pybind11 as submodule (HydraAPI root dir): 
@@ -60,6 +60,10 @@ So in general there should be no problem to use HydraAPI in your open source or 
 
 However if you find that for some reason you can't use one of these components, please let us know!
 Most of these components can be replaced.
+
+# FAQ and Problems
+* hrSceneLibraryOpen immediately lead to segmentation fault. Probably you have forgoten call hrInit before hrSceneLibraryOpen. The other case if you pass "-emptyvirtualbuffer 1" to hrInit and then open scene in HR_WRITE_DISCARD mode.
+
 
 # Acknowlegments
 This project is supported by RFBR 16-31-60048 "mol_a_dk".
